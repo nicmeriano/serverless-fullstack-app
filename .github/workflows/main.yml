@@ -55,6 +55,9 @@ jobs:
         with:
          node-version: ${{ matrix.node-version }}
       - run: pwd 
+      - run: cd site
+      - run: pwd
+      - run: npm i
       - run: npx serverless deploy --stage dev
 
 
