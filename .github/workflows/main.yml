@@ -55,8 +55,11 @@ jobs:
         with:
          node-version: ${{ matrix.node-version }}
       - run: pwd 
-      - name: Install dependencies
+      - name: Install site dependencies
         working-directory: ./site
+        run: npm i
+      - name: Install api dependencies
+        working-directory: ./api
         run: npm i
       - run: npx serverless deploy --stage dev
 
