@@ -1,1 +1,6 @@
-app: fullstack-app
+name: serverless-fullstack-app
+org: nicmeriano
+description: Deploy a serverless fullstack application using Express.js and React on AWS Lambda and AWS HTTP API
+keywords: serverless, express, react, fullstack, aws, aws lambda
+repo: https://github.com/nicmeriano/serverless-fullstack-app
+license: MIT
