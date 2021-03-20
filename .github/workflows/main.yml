@@ -40,15 +40,21 @@ jobs:
     if: github.event_name == 'pull_request'
 #     needs: [Build]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
     environment: 
       name: Dev
 #       url: 'http://dev.myapp.com'
     steps:
-     
-     - name: serverless deploy
-       uses: serverless/github-action@master
-       with:
-        args: deploy --stage dev
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+         node-version: ${{ matrix.node-version }}
+      - run: pwd 
+      - run: npx serverless deploy --stage dev
+
 
   DeployTest:
     name: Deploy to Test 
