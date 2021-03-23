@@ -2,57 +2,57 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  
+
 env:
   SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-#   Build:
-#     runs-on: ubuntu-latest
-#     strategy:
-#       matrix:
-#         node-version: [14.x]
-#     steps:
-#       - uses: actions/checkout@v2
-#       - name: Use Node.js ${{ matrix.node-version }}
-#         uses: actions/setup-node@v1
-#         with:
-#          node-version: ${{ matrix.node-version }}
-#       - run: npm ci
+  #   Build:
+  #     runs-on: ubuntu-latest
+  #     strategy:
+  #       matrix:
+  #         node-version: [14.x]
+  #     steps:
+  #       - uses: actions/checkout@v2
+  #       - name: Use Node.js ${{ matrix.node-version }}
+  #         uses: actions/setup-node@v1
+  #         with:
+  #          node-version: ${{ matrix.node-version }}
+  #       - run: npm ci
 
-#       - name: Compile
-#         run: echo Hello, world!
+  #       - name: Compile
+  #         run: echo Hello, world!
 
   DeployDev:
-    name: Deploy to Dev 
+    name: Deploy to Dev
     if: github.event_name == 'pull_request'
-#     needs: [Build]
+    #     needs: [Build]
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [14.x]
-    environment: 
+    environment:
       name: Dev
-#       url: 'http://dev.myapp.com'
-    
+    #       url: 'http://dev.myapp.com'
+
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-         node-version: ${{ matrix.node-version }}
-      - run: pwd 
+          node-version: ${{ matrix.node-version }}
+      - run: pwd
       - name: Install site dependencies
         working-directory: ./site
         run: npm i
@@ -61,30 +61,52 @@ jobs:
         run: npm i
       - run: npx serverless deploy --stage dev
         env:
-         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   DeployTest:
-    name: Deploy to Test 
+    name: Deploy to Test
     if: github.event.ref == 'refs/heads/main'
-#     needs: [Build]
+    #     needs: [Build]
     runs-on: ubuntu-latest
-    environment: 
+    environment:
       name: Test
-#       url: 'http://test.myapp.com'
+    #       url: 'http://test.myapp.com'
     steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: pwd
+      - name: Install site dependencies
+        working-directory: ./site
+        run: npm i
+      - name: Install api dependencies
+        working-directory: ./api
+        run: npm i
       - name: Deploy
         run: npx serverless deploy --stage test
 
   DeployProd:
-    name: Deploy to Production 
+    name: Deploy to Production
     needs: [DeployTest]
     runs-on: ubuntu-latest
-    environment: 
+    environment:
       name: Prod
-#       url: 'http://www.myapp.com'
+    #       url: 'http://www.myapp.com'
     steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: pwd
+      - name: Install site dependencies
+        working-directory: ./site
+        run: npm i
+      - name: Install api dependencies
+        working-directory: ./api
+        run: npm i
       - name: Deploy
         run: npx serverless deploy --stage prod
