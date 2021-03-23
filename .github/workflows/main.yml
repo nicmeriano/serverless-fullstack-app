@@ -76,7 +76,7 @@ jobs:
 #       url: 'http://test.myapp.com'
     steps:
       - name: Deploy
-        run: sls deploy --stage test
+        run: npx serverless deploy --stage test
 
   DeployProd:
     name: Deploy to Production 
@@ -87,4 +87,4 @@ jobs:
 #       url: 'http://www.myapp.com'
     steps:
       - name: Deploy
-        run: sls deploy --stage prod
+        run: npx serverless deploy --stage prod
